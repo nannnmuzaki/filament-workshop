@@ -18,6 +18,16 @@ class BookCategoriesTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('books_count')
+                    ->counts('books')
+                    ->label('Books')
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

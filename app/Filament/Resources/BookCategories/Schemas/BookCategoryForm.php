@@ -10,8 +10,12 @@ class BookCategoryForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
-                TextInput::make('name'),
+                TextInput::make('name')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
             ]);
     }
 }
