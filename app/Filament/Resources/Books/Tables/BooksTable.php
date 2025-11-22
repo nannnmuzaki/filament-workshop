@@ -9,6 +9,7 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\ViewAction;
 use Filament\Actions\DeleteAction;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 
@@ -22,12 +23,13 @@ class BooksTable
                     ->label('Cover')
                     ->disk('public')
                     ->square()
-                    ->ImageSize(40),
+                    ->ImageSize(40)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('title')
                     ->searchable()
                     ->sortable()
                     ->limit(40),
-                TextColumn::make('author')
+                TextColumn::make('author.name')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('year')
@@ -50,7 +52,9 @@ class BooksTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('book_category_id')
+                    ->relationship('bookCategory', 'name')
+                    ->label('Category')
             ])
             ->recordActions([
                 ActionGroup::make([

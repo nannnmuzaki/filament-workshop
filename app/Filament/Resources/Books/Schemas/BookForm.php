@@ -37,10 +37,24 @@ class BookForm
                             ->required()
                             ->maxLength(255),
                     ]),
-                TextInput::make('author')
+                Select::make('author_id')
                     ->label('Author')
+                    ->relationship('author', 'name')
+                    ->searchable()
+                    ->preload()
                     ->required()
-                    ->maxLength(255),
+                    ->createOptionForm([
+                        FileUpload::make('avatar_path')
+                            ->label('Author Avatar')
+                            ->image()
+                            ->disk('public')
+                            ->directory('author-avatars')
+                            ->required()
+                            ->maxSize(2048),
+                        TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                    ]),
                 TextInput::make('year')
                     ->label('Publication Year')
                     ->required()
