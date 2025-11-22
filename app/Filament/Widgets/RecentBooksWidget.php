@@ -3,8 +3,9 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Book;
-use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class RecentBooksWidget extends BaseWidget
@@ -22,25 +23,25 @@ class RecentBooksWidget extends BaseWidget
                     ->limit(5)
             )
             ->columns([
-                Tables\Columns\ImageColumn::make('cover_path')
+                ImageColumn::make('cover_path')
                     ->label('Cover')
                     ->disk('public')
                     ->square()
                     ->size(40),
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->searchable()
                     ->sortable()
                     ->weight('bold')
                     ->limit(30),
-                Tables\Columns\TextColumn::make('author')
+                TextColumn::make('author.name')
                     ->searchable()
                     ->sortable()
                     ->limit(25),
-                Tables\Columns\TextColumn::make('bookCategory.name')
+                TextColumn::make('bookCategory.name')
                     ->label('Category')
                     ->badge()
                     ->color('info'),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Added')
                     ->dateTime('M j, Y')
                     ->sortable(),

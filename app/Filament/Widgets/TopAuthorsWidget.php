@@ -2,9 +2,10 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Book;
-use Filament\Tables;
+use App\Models\Author;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class TopAuthorsWidget extends BaseWidget
@@ -14,29 +15,30 @@ class TopAuthorsWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        $topAuthors = Book::select('author')
-            ->groupBy('author')
-            ->orderByRaw('COUNT(*) DESC')
-            ->limit(10)
-            ->pluck('author');
-
         return $table
             ->query(
-                Book::query()
-                    ->whereIn('author', $topAuthors)
-                    ->orderBy('author')
+                Author::query()
+                    ->withCount('books')
+                    ->whereHas('books')
+                    ->orderBy('books_count', 'desc')
+                    ->limit(10)
             )
             ->columns([
-                Tables\Columns\TextColumn::make('author')
+                ImageColumn::make('avatar_path')
+                    ->label('Avatar')
+                    ->disk('public')
+                    ->circular()
+                    ->size(40),
+                TextColumn::make('name')
                     ->label('Author')
-                    ->icon('heroicon-m-user')
                     ->weight('bold')
-                    ->formatStateUsing(fn ($state, $record) => $state),
-                Tables\Columns\TextColumn::make('books_count')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('books_count')
                     ->label('Number of Books')
                     ->badge()
                     ->color('success')
-                    ->state(fn ($record) => Book::where('author', $record->author)->count()),
+                    ->sortable(),
             ])
             ->heading('Top Authors')
             ->description('Authors with the most books in the library')
